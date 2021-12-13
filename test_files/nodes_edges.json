@@ -1,0 +1,372 @@
+{
+  "edges": [
+    {
+      "u": "Ethereum:ETH",
+      "v": "Ethereum:USDC",
+      "fee": 252820.48479405578
+    },
+    {
+      "u": "Ethereum:USDC",
+      "v": "Ethereum:ETH",
+      "fee": 252820.48479405578
+    },
+    {
+      "u": "Ethereum:ETH",
+      "v": "Ethereum:DAI",
+      "fee": 553095.8680305256
+    },
+    {
+      "u": "Ethereum:DAI",
+      "v": "Ethereum:ETH",
+      "fee": 553095.8680305256
+    },
+    {
+      "u": "Ethereum:ETH",
+      "v": "Ethereum:USDT",
+      "fee": 113253.84112893659
+    },
+    {
+      "u": "Ethereum:USDT",
+      "v": "Ethereum:ETH",
+      "fee": 113253.84112893659
+    },
+    {
+      "u": "Ethereum:ETH",
+      "v": "Ethereum:SUSHI",
+      "fee": 5281.247226853233
+    },
+    {
+      "u": "Ethereum:SUSHI",
+      "v": "Ethereum:ETH",
+      "fee": 5281.247226853233
+    },
+    {
+      "u": "Ethereum:ETH",
+      "v": "Ethereum:MATIC",
+      "fee": 48974.61839984858
+    },
+    {
+      "u": "Ethereum:MATIC",
+      "v": "Ethereum:ETH",
+      "fee": 48974.61839984858
+    },
+    {
+      "u": "Ethereum:USDC",
+      "v": "Ethereum:DAI",
+      "fee": 61487.781034449064
+    },
+    {
+      "u": "Ethereum:DAI",
+      "v": "Ethereum:USDC",
+      "fee": 61487.781034449064
+    },
+    {
+      "u": "Ethereum:USDC",
+      "v": "Ethereum:USDT",
+      "fee": 719790.4879472676
+    },
+    {
+      "u": "Ethereum:USDT",
+      "v": "Ethereum:USDC",
+      "fee": 719790.4879472676
+    },
+    {
+      "u": "Ethereum:USDC",
+      "v": "Ethereum:SUSHI",
+      "fee": 7759.095394091398
+    },
+    {
+      "u": "Ethereum:SUSHI",
+      "v": "Ethereum:USDC",
+      "fee": 7759.095394091398
+    },
+    {
+      "u": "Ethereum:USDC",
+      "v": "Ethereum:MATIC",
+      "fee": 1464.2702586151838
+    },
+    {
+      "u": "Ethereum:MATIC",
+      "v": "Ethereum:USDC",
+      "fee": 1464.2702586151838
+    },
+    {
+      "u": "Ethereum:DAI",
+      "v": "Ethereum:USDT",
+      "fee": 27220.486871784346
+    },
+    {
+      "u": "Ethereum:USDT",
+      "v": "Ethereum:DAI",
+      "fee": 27220.486871784346
+    },
+    {
+      "u": "Ethereum:DAI",
+      "v": "Ethereum:SUSHI",
+      "fee": 16338.335477574681
+    },
+    {
+      "u": "Ethereum:SUSHI",
+      "v": "Ethereum:DAI",
+      "fee": 16338.335477574681
+    },
+    {
+      "u": "Ethereum:DAI",
+      "v": "Ethereum:MATIC",
+      "fee": 101747.32340986781
+    },
+    {
+      "u": "Ethereum:MATIC",
+      "v": "Ethereum:DAI",
+      "fee": 101747.32340986781
+    },
+    {
+      "u": "Ethereum:USDT",
+      "v": "Ethereum:SUSHI",
+      "fee": 8530.414297277053
+    },
+    {
+      "u": "Ethereum:SUSHI",
+      "v": "Ethereum:USDT",
+      "fee": 8530.414297277053
+    },
+    {
+      "u": "Ethereum:USDT",
+      "v": "Ethereum:MATIC",
+      "fee": 31313.66551026277
+    },
+    {
+      "u": "Ethereum:MATIC",
+      "v": "Ethereum:USDT",
+      "fee": 31313.66551026277
+    },
+    {
+      "u": "Ethereum:SUSHI",
+      "v": "Ethereum:MATIC",
+      "fee": 17999.63179573689
+    },
+    {
+      "u": "Ethereum:MATIC",
+      "v": "Ethereum:SUSHI",
+      "fee": 17999.63179573689
+    },
+    {
+      "u": "Polygon:MATIC",
+      "v": "Polygon:ETH",
+      "fee": 32515.65483965111
+    },
+    {
+      "u": "Polygon:ETH",
+      "v": "Polygon:MATIC",
+      "fee": 32515.65483965111
+    },
+    {
+      "u": "Polygon:MATIC",
+      "v": "Polygon:AAVE",
+      "fee": 185072.46467868946
+    },
+    {
+      "u": "Polygon:AAVE",
+      "v": "Polygon:MATIC",
+      "fee": 185072.46467868946
+    },
+    {
+      "u": "Polygon:MATIC",
+      "v": "Polygon:ANY",
+      "fee": 212470.2232721175
+    },
+    {
+      "u": "Polygon:ANY",
+      "v": "Polygon:MATIC",
+      "fee": 212470.2232721175
+    },
+    {
+      "u": "Polygon:MATIC",
+      "v": "Polygon:BIFI",
+      "fee": 63279.83877480376
+    },
+    {
+      "u": "Polygon:BIFI",
+      "v": "Polygon:MATIC",
+      "fee": 63279.83877480376
+    },
+    {
+      "u": "Polygon:MATIC",
+      "v": "Polygon:ADDY",
+      "fee": 38908.677930329875
+    },
+    {
+      "u": "Polygon:ADDY",
+      "v": "Polygon:MATIC",
+      "fee": 38908.677930329875
+    },
+    {
+      "u": "Polygon:ETH",
+      "v": "Polygon:AAVE",
+      "fee": 1272.3781004834448
+    },
+    {
+      "u": "Polygon:AAVE",
+      "v": "Polygon:ETH",
+      "fee": 1272.3781004834448
+    },
+    {
+      "u": "Polygon:ETH",
+      "v": "Polygon:ANY",
+      "fee": 9511.289773857266
+    },
+    {
+      "u": "Polygon:ANY",
+      "v": "Polygon:ETH",
+      "fee": 9511.289773857266
+    },
+    {
+      "u": "Polygon:ETH",
+      "v": "Polygon:BIFI",
+      "fee": 1235.1929737763126
+    },
+    {
+      "u": "Polygon:BIFI",
+      "v": "Polygon:ETH",
+      "fee": 1235.1929737763126
+    },
+    {
+      "u": "Polygon:ETH",
+      "v": "Polygon:ADDY",
+      "fee": 35096.90630189519
+    },
+    {
+      "u": "Polygon:ADDY",
+      "v": "Polygon:ETH",
+      "fee": 35096.90630189519
+    },
+    {
+      "u": "Polygon:AAVE",
+      "v": "Polygon:ANY",
+      "fee": 234574.46770848968
+    },
+    {
+      "u": "Polygon:ANY",
+      "v": "Polygon:AAVE",
+      "fee": 234574.46770848968
+    },
+    {
+      "u": "Polygon:AAVE",
+      "v": "Polygon:BIFI",
+      "fee": 1212.4458972899304
+    },
+    {
+      "u": "Polygon:BIFI",
+      "v": "Polygon:AAVE",
+      "fee": 1212.4458972899304
+    },
+    {
+      "u": "Polygon:AAVE",
+      "v": "Polygon:ADDY",
+      "fee": 19081.840820473833
+    },
+    {
+      "u": "Polygon:ADDY",
+      "v": "Polygon:AAVE",
+      "fee": 19081.840820473833
+    },
+    {
+      "u": "Polygon:ANY",
+      "v": "Polygon:BIFI",
+      "fee": 198899.62334448067
+    },
+    {
+      "u": "Polygon:BIFI",
+      "v": "Polygon:ANY",
+      "fee": 198899.62334448067
+    },
+    {
+      "u": "Polygon:ANY",
+      "v": "Polygon:ADDY",
+      "fee": 13819.874140701613
+    },
+    {
+      "u": "Polygon:ADDY",
+      "v": "Polygon:ANY",
+      "fee": 13819.874140701613
+    },
+    {
+      "u": "Polygon:BIFI",
+      "v": "Polygon:ADDY",
+      "fee": 280430.1954353794
+    },
+    {
+      "u": "Polygon:ADDY",
+      "v": "Polygon:BIFI",
+      "fee": 280430.1954353794
+    },
+    {
+      "u": "Ethereum:MATIC",
+      "v": "Polygon:MATIC",
+      "fee": 19901.841625577512,
+      "isBridge": true
+    },
+    {
+      "u": "Ethereum:ETH",
+      "v": "Polygon:BIFI",
+      "fee": 29542.829174457198,
+      "isBridge": true
+    },
+    {
+      "u": "Ethereum:ETH",
+      "v": "Polygon:ETH",
+      "fee": 25515.59579356086,
+      "isBridge": true
+    }
+  ],
+  "nodes": [
+    {
+      "liquidity": 7584.504160074098,
+      "name": "Ethereum:ETH"
+    },
+    {
+      "liquidity": 4705.395558437245,
+      "name": "Ethereum:USDC"
+    },
+    {
+      "liquidity": 147065.36748019865,
+      "name": "Ethereum:DAI"
+    },
+    {
+      "liquidity": 102886.45569699399,
+      "name": "Ethereum:USDT"
+    },
+    {
+      "liquidity": 1209.1346084043985,
+      "name": "Ethereum:SUSHI"
+    },
+    {
+      "liquidity": 1216.7768404212545,
+      "name": "Ethereum:MATIC"
+    },
+    {
+      "liquidity": 1749.2235731650164,
+      "name": "Polygon:MATIC"
+    },
+    {
+      "liquidity": 9187.6083597416,
+      "name": "Polygon:ETH"
+    },
+    {
+      "liquidity": 16082.272305495715,
+      "name": "Polygon:AAVE"
+    },
+    {
+      "liquidity": 561732.9009029829,
+      "name": "Polygon:ANY"
+    },
+    {
+      "liquidity": 812142.7533742434,
+      "name": "Polygon:BIFI"
+    },
+    {
+      "liquidity": 1931.227560865454,
+      "name": "Polygon:ADDY"
+    }
+  ]
+}

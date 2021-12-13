@@ -1,0 +1,136 @@
+[
+  [
+    {
+      "u": "chain0",
+      "v": "chain1",
+      "bridge": "cc_dex1",
+      "liquidity": 83537500,
+      "rate": 4098.617291667825,
+      "fee": 3,
+      "weight": 3.000000011970672,
+      "moved_liquidity": 1000
+    }
+  ],
+  [
+    {
+      "u": "chain0",
+      "v": "sc_dex4",
+      "bridge": "sc_dex4",
+      "liquidity": 76769737,
+      "rate": 1.0190776455712178,
+      "fee": 2,
+      "weight": 2.000000013025966,
+      "moved_liquidity": 0
+    },
+    {
+      "u": "sc_dex4",
+      "v": "chain1",
+      "bridge": "cc_dex1",
+      "liquidity": 54643606,
+      "rate": 4008.521624583872,
+      "fee": 1,
+      "weight": 1.0000000183004027,
+      "moved_liquidity": 0
+    }
+  ],
+  [
+    {
+      "u": "chain0",
+      "v": "sc_dex1",
+      "bridge": "sc_dex1",
+      "liquidity": 76981561,
+      "rate": 0.999341695689531,
+      "fee": 5,
+      "weight": 5.000000012990124,
+      "moved_liquidity": 0
+    },
+    {
+      "u": "sc_dex1",
+      "v": "chain1",
+      "bridge": "cc_dex0",
+      "liquidity": 98107217,
+      "rate": 4098.131501072287,
+      "fee": 2,
+      "weight": 2.00000001019293,
+      "moved_liquidity": 0
+    }
+  ],
+  [
+    {
+      "u": "chain0",
+      "v": "sc_dex0",
+      "bridge": "sc_dex0",
+      "liquidity": 38244727,
+      "rate": 0.9959964568698321,
+      "fee": 3,
+      "weight": 3.0000000261473954,
+      "moved_liquidity": 0
+    },
+    {
+      "u": "sc_dex0",
+      "v": "chain1",
+      "bridge": "bridge0",
+      "liquidity": 67752099,
+      "rate": 4092.589015610406,
+      "fee": 4,
+      "weight": 4.00000001475969,
+      "moved_liquidity": 0
+    }
+  ],
+  [
+    {
+      "u": "chain0",
+      "v": "dc_dex0",
+      "bridge": "bridge0",
+      "liquidity": 43464177,
+      "rate": 4002.3102574715376,
+      "fee": 4,
+      "weight": 4.000000023007453,
+      "moved_liquidity": 0
+    },
+    {
+      "u": "dc_dex0",
+      "v": "chain1",
+      "bridge": "dc_dex0",
+      "liquidity": 56196687,
+      "rate": 0.9987456968652285,
+      "fee": 4,
+      "weight": 4.000000017794643,
+      "moved_liquidity": 0
+    }
+  ],
+  [
+    {
+      "u": "chain0",
+      "v": "chain1",
+      "bridge": "cc_dex0",
+      "liquidity": 15298281,
+      "rate": 4058.7406715378643,
+      "fee": 8,
+      "weight": 8.000000065366821,
+      "moved_liquidity": 0
+    }
+  ],
+  [
+    {
+      "u": "chain0",
+      "v": "dc_dex2",
+      "bridge": "cc_dex0",
+      "liquidity": 21686448,
+      "rate": 4008.0072736807047,
+      "fee": 5,
+      "weight": 5.000000046111746,
+      "moved_liquidity": 0
+    },
+    {
+      "u": "dc_dex2",
+      "v": "chain1",
+      "bridge": "dc_dex2",
+      "liquidity": 42867369,
+      "rate": 1.0160852830952196,
+      "fee": 4,
+      "weight": 4.000000023327767,
+      "moved_liquidity": 0
+    }
+  ]
+]
