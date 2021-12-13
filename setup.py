@@ -45,7 +45,7 @@ setup(
     packages=find_packages(include=["entropic", "entropic.*"]),
     test_suite="tests",
     tests_require=test_requirements,
-    url="https://github.com/jmmshn/entropic",
+    url="https://github.com/entropic-finance/dexa-core-code",
     version="0.1.0",
     zip_safe=False,
 )
