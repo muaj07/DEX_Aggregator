@@ -7,26 +7,40 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-def price_impact_curve(x, y, amt, slippage=0.95) -> Tuple[float, float, float]:
+def price_impact_curve(liq1:float, liq2:float, amt:float) -> Tuple[np.array, np.array]:
     """
     Calculates the price impact curve between two different assets by
     fitting a linear function to the data between [0, amt]
     Args:
-        x: The liquidity of the source asset
-        y: The liquidity of the destination asset
+        liq1: The liquidity of the source asset
+        liq2: The liquidity of the destination asset
+        amt: The amount of liquidity to be transferred
+    Returns:
+        A tuple of the price impact info:
+        (slope, intercept, price_estimate)
+    """
+    k = liq1 * liq2
+    xx = np.linspace(0, amt, 100)
+    yy = liq2 - (k / (liq1 + xx))
+    return xx, yy
+
+def price_impact_line(liq1:float, liq2:float, amt:float, slippage=0.95) -> Tuple[float, float, float]:
+    """
+    Calculates the price impact curve between two different assets by
+    fitting a linear function to the data between [0, amt]
+    Args:
+        liq1: The liquidity of the source asset
+        liq2: The liquidity of the destination asset
         amt: The amount of liquidity to be transferred
         slippage: The slippage factor
     Returns:
         A tuple of the price impact info:
         (slope, intercept, price_estimate)
     """
-    k = x * y
-    a = np.linspace(0, amt, 100)
-    b = y - (k / (x + a))
-    slope, intercept = np.polyfit(a, b, 1)
-    price_estimate = (y - (k / (x + 1))) * slippage
+    xx, yy = price_impact_curve(liq1=liq1, liq2=liq2, amt=amt)
+    slope, intercept = np.polyfit(xx, yy, 1)
+    price_estimate = (liq2 - ((liq1*liq2) / (liq1 + 1))) * slippage
     return slope, intercept, price_estimate
-
 
 def liquidity_per_path(paths, amt) -> Tuple[dict, dict, dict]:
     """
@@ -68,16 +82,17 @@ def liquidity_per_path(paths, amt) -> Tuple[dict, dict, dict]:
 def linear_model(lines, amt) -> list:
     """
     For a series of lines compute the following optimization problem:
-    Maximize: the sum of output_var's
+    Maximize:
+        The sum of output_var's
     Constained by:
-    output_var_i - m_i input_var_i==c_i
-    output_var_i - slippage_i input_var_i>=0
+        output_var_i - m_i * input_var_i==c_i
+        output_var_i - slippage_i * input_var_i>=0
     sum of all input_var==amt
     Args:
-    lines: list of dictionaries containing parameters (slope, intercept, slippage) values
-    for all the k-shortest path
+        lines: list of dictionaries containing parameters 
+        (slope, intercept, slippage) values for all the k-shortest path
     Return:
-    list of variables values
+        list of variables values
     """
     equ_matrix = np.zeros((len(lines), len(lines) * 2))
     inequ_matrix = np.zeros((len(lines), len(lines) * 2))
@@ -92,7 +107,7 @@ def linear_model(lines, amt) -> list:
     # setting the matrixs for constraints with equality and inequality
     for i in range(len(lines)):
         equ_matrix[i][j] = 1
-        equ_matrix[i][j + 1] = -lines[i]["m"]
+        equ_matrix[i][j + 1] = lines[i]["m"]
         inequ_matrix[i][j] = 1
         inequ_matrix[i][j + 1] = -lines[i]["s"]
         j += 2
