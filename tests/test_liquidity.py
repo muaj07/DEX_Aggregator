@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 import random
 from monty.serialization import loadfn
-from entropic.liquidity import price_impact_curve, linear_model
+from entropic.liquidity import exchange_curve, linear_model
 
 TEST_FILES_DIR = Path(__file__).parent.parent / "test_files"
 
@@ -18,13 +18,13 @@ def model_data():
     return loadfn(TEST_FILES_DIR / "linear_model.json")
 
 
-def test_price_impact_curve():
+def test_exchange_curve():
     """
-    Test the price impact curve function.
+    Test the exchange curve function.
     the path is given by a list of nodes with some finite liquidity
     """
     hop = {"source_liquidity": 1, "target_liquidity": 1}
-    xx, yy = price_impact_curve(hop["source_liquidity"], hop["target_liquidity"], 1)
+    xx, yy = exchange_curve(hop["source_liquidity"], hop["target_liquidity"], 1)
     assert max(xx) <= 1
 
 

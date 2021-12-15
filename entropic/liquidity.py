@@ -7,7 +7,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-def price_impact_curve(
+def exchange_curve(
     liq1: float, liq2: float, amt: float
 ) -> Tuple[np.array, np.array]:
     """
@@ -26,8 +26,7 @@ def price_impact_curve(
     yy = liq2 - (k / (liq1 + xx))
     return xx, yy
 
-
-def price_impact_line(
+def exchange_line(
     liq1: float, liq2: float, amt: float, slippage=0.95
 ) -> Tuple[float, float, float]:
     """
@@ -42,7 +41,7 @@ def price_impact_line(
         A tuple of the price impact info:
         (slope, intercept, price_estimate)
     """
-    xx, yy = price_impact_curve(liq1=liq1, liq2=liq2, amt=amt)
+    xx, yy = exchange_curve(liq1=liq1, liq2=liq2, amt=amt)
     slope, intercept = np.polyfit(xx, yy, 1)
     price_estimate = (liq2 - ((liq1 * liq2) / (liq1 + 1))) * slippage
     return slope, intercept, price_estimate
@@ -256,7 +255,7 @@ def liquidity_per_path(paths, amt) -> Tuple[dict, dict, dict]:
             asset_a = (0.5 * edge["liquidity"]) / edge["rate"]
             asset_b = 0.5 * edge["liquidity"]
             print(edge["bridge"])
-            pic_slope, pic_intercept, s_price = price_impact_line(asset_a, asset_b, amt)
+            pic_slope, pic_intercept, s_price = exchange_line(asset_a, asset_b, amt)
             slope.append(pic_slope)
             y_inter.append(pic_intercept)
             slippage_price.append(s_price)
