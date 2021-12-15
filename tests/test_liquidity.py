@@ -2,8 +2,6 @@
 from pathlib import Path
 import pytest
 import random
-import cvxpy as cp
-import numpy as np
 from monty.serialization import loadfn
 from entropic.liquidity import price_impact_curve, linear_model
 
@@ -25,9 +23,10 @@ def test_price_impact_curve():
     Test the price impact curve function.
     the path is given by a list of nodes with some finite liquidity
     """
-    hop = {"source_liquidity": 1, "target_liquidity":1}
+    hop = {"source_liquidity": 1, "target_liquidity": 1}
     xx, yy = price_impact_curve(hop["source_liquidity"], hop["target_liquidity"], 1)
     assert max(xx) <= 1
+
 
 def test_linear_model():
     """
@@ -35,23 +34,17 @@ def test_linear_model():
     The return value for x variables should not be none
     """
     lines = [
-        {"m": 2, "c": 1, "s": 0.99},
-        {"m": 0.5, "c": 1, "s": 0.99},
+        {"m": -3.9, "c": 10.5, "s": 3.9},
+        {"m": -4.0, "c": 9.84, "s": 4.09},
     ]
-    res = linear_model(lines, 1.4)
-    # assert res[0] > 0.4 * 0.98
-    
+    res = linear_model(lines, 500)
+    assert res[0] == pytest.approx(390.66667)
+    assert res[1] == pytest.approx(109.33332)
+
     # res = linear_model(lines, 1.5)
     # print(res)
     # assert False
-    
-    
 
-    
-
-
-    
-    
 
 def test_process_model_result(path_data):
     """
@@ -77,5 +70,6 @@ def test_process_model_result(path_data):
                     k = asset_a * asset_b
                     asset_amount[i] = asset_b - (k / (asset_a + asset_amount[i]))
                     assert asset_amount[i] >= 0
+
 
 # %%

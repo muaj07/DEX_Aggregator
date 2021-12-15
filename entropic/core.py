@@ -40,9 +40,9 @@ class DEXA(MSONable):
 
         for node_dict in node_list:
             graph.nodes[node_dict["name"]].update(node_dict)
-        for u,v,d in graph.edges(data=True):
-            d['source_liquidity'] = graph.nodes[u].get('liquidity', 0)
-            d['target_liquidity'] = graph.nodes[v].get('liquidity', 0)
+        for u, v, d in graph.edges(data=True):
+            d["source_liquidity"] = graph.nodes[u].get("liquidity", 0)
+            d["target_liquidity"] = graph.nodes[v].get("liquidity", 0)
         return cls(graph)
 
     @classmethod

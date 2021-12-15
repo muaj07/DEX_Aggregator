@@ -7,7 +7,9 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-def price_impact_curve(liq1:float, liq2:float, amt:float) -> Tuple[np.array, np.array]:
+def price_impact_curve(
+    liq1: float, liq2: float, amt: float
+) -> Tuple[np.array, np.array]:
     """
     Calculates the price impact curve between two different assets by
     fitting a linear function to the data between [0, amt]
@@ -24,7 +26,10 @@ def price_impact_curve(liq1:float, liq2:float, amt:float) -> Tuple[np.array, np.
     yy = liq2 - (k / (liq1 + xx))
     return xx, yy
 
-def price_impact_line(liq1:float, liq2:float, amt:float, slippage=0.95) -> Tuple[float, float, float]:
+
+def price_impact_line(
+    liq1: float, liq2: float, amt: float, slippage=0.95
+) -> Tuple[float, float, float]:
     """
     Calculates the price impact curve between two different assets by
     fitting a linear function to the data between [0, amt]
@@ -39,8 +44,9 @@ def price_impact_line(liq1:float, liq2:float, amt:float, slippage=0.95) -> Tuple
     """
     xx, yy = price_impact_curve(liq1=liq1, liq2=liq2, amt=amt)
     slope, intercept = np.polyfit(xx, yy, 1)
-    price_estimate = (liq2 - ((liq1*liq2) / (liq1 + 1))) * slippage
+    price_estimate = (liq2 - ((liq1 * liq2) / (liq1 + 1))) * slippage
     return slope, intercept, price_estimate
+
 
 def liquidity_per_path(paths, amt) -> Tuple[dict, dict, dict]:
     """
@@ -66,9 +72,7 @@ def liquidity_per_path(paths, amt) -> Tuple[dict, dict, dict]:
             asset_a = (0.5 * edge["liquidity"]) / edge["rate"]
             asset_b = 0.5 * edge["liquidity"]
             print(edge["bridge"])
-            pic_slope, pic_intercept, s_price = price_impact_curve(
-                asset_a, asset_b, amt
-            )
+            pic_slope, pic_intercept, s_price = price_impact_line(asset_a, asset_b, amt)
             slope.append(pic_slope)
             y_inter.append(pic_intercept)
             slippage_price.append(s_price)
@@ -89,7 +93,7 @@ def linear_model(lines, amt) -> list:
         output_var_i - slippage_i * input_var_i>=0
     sum of all input_var==amt
     Args:
-        lines: list of dictionaries containing parameters 
+        lines: list of dictionaries containing parameters
         (slope, intercept, slippage) values for all the k-shortest path
     Return:
         list of variables values

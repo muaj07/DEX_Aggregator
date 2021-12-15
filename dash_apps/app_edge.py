@@ -5,7 +5,6 @@ from dash.dependencies import Input, Output
 import dash_cytoscape as cyto
 from pathlib import Path
 import dash_reusable_components as drc
-from pprint import pprint
 from utils import get_graph_data, get_price_impact_curve
 
 TEST_FILES_DIR = Path(__file__).parent.parent / "test_files"

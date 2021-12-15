@@ -61,11 +61,9 @@ def get_price_impact_curve(edge_data, amt):
     pprint(edge_data)
     # Since cytroscape does not support default selection, we need placeholder data before a click is made
     if edge_data:
-        liq_1 = edge_data['source_liquidity']
+        liq_1 = edge_data["source_liquidity"]
         liq_2 = edge_data["target_liquidity"]
-        xx, yy = price_impact_curve(
-            liq_1, liq_2, amt=amt
-        )
+        xx, yy = price_impact_curve(liq_1, liq_2, amt=amt)
         slope, intercept, price = price_impact_line(
             liq_1, liq_2, amt=amt, slippage=0.95
         )
@@ -74,7 +72,7 @@ def get_price_impact_curve(edge_data, amt):
         xx = np.linspace(0, amt, 100)
         yy = xx
         yy_fit = yy
-    
+
     df = pd.DataFrame({"Amount": xx, "Price Impact": yy, "Fit": yy_fit})
     fig = px.line(df, x="Amount", y=["Price Impact", "Fit"], template="plotly_dark")
     fig.update_layout(
