@@ -47,96 +47,52 @@ def price_impact_line(
     price_estimate = (liq2 - ((liq1 * liq2) / (liq1 + 1))) * slippage
     return slope, intercept, price_estimate
 
-
-def liquidity_per_path(paths, amt) -> Tuple[dict, dict, dict]:
+def linear_model(lines, slopes, amt):
     """
-    Calculates the linear function (slope, intercept) for all the edges
-    of k-shortest paths using the available liquidity at the path edges
-    and the given exchange rate
-    Args:
-        paths: Set of k-shortest path between source and destination chains
-        amt: The amount of liquidity to be exchanged/swapped
-    Returns:
-        A tuple of the dictionaries for path liquidity info:
-        (slope_dict, intercept_dict, price_estimate_dict)
-    """
-    slope_dict = {}
-    inter_dict = {}
-    slippage_dict = {}
-    i = 0
-    for i, ip in enumerate(paths):
-        slope = []
-        y_inter = []
-        slippage_price = []
-        for edge in ip:
-            asset_a = (0.5 * edge["liquidity"]) / edge["rate"]
-            asset_b = 0.5 * edge["liquidity"]
-            print(edge["bridge"])
-            pic_slope, pic_intercept, s_price = price_impact_line(asset_a, asset_b, amt)
-            slope.append(pic_slope)
-            y_inter.append(pic_intercept)
-            slippage_price.append(s_price)
-        slope_dict[i] = slope
-        inter_dict[i] = y_inter
-        slippage_dict[i] = slippage_price
-
-    return slope_dict, inter_dict, slippage_dict
-
-
-def linear_model(lines, amt) -> list:
-    """
-    For a series of lines compute the following optimization problem:
+    For a set of lines defined by (m_i, b_i) and another set of slopes (s_i)
+    Solve the following problem:
+    For:
+        y_i = m_i * x_i + b_i
     Maximize:
-        The sum of output_var's
-    Constained by:
-        output_var_i - m_i * input_var_i==c_i
-        output_var_i - slippage_i * input_var_i>=0
-    sum of all input_var==amt
+        sum(y_i)
+    Constraints:
+        1. sum(x_i) < total
+        2. y_i >= s_i.T x_i
     Args:
-        lines: list of dictionaries containing parameters
-        (slope, intercept, slippage) values for all the k-shortest path
-    Return:
-        list of variables values
+        lines: set of (m_i, b_i)
+        slopes: set of s_i
+        amt: total amount of liquidity to be exchanged
+    Returns:
+        x_i: set of x_i
+
+    Note:
+        Without the additional slope constraint the problem is basically trivial.
+        Since all of the assets will just go to the path with the highest slope
+        This is essentially an artifact of the fact that the intercept is not zero.
+        [TODO] I propose we set the intercept to zero for all linear fits for now.
+        And generalize to non-linear functions later.
     """
-    equ_matrix = np.zeros((len(lines), len(lines) * 2))
-    inequ_matrix = np.zeros((len(lines), len(lines) * 2))
-    y_inter = np.array([sub["c"] for sub in lines])
-    # Define all the variables as x for the model
-    all_var = cp.Variable(len(lines) * 2, name="x")
-    output_var = np.array([1 if i % 2 == 0 else 0 for i in range(len(lines) * 2)])
-    input_var = np.array([1 if i % 2 == 1 else 0 for i in range(len(lines) * 2)])
-    # Define the objective function for the model
-    objective = cp.Maximize(output_var.T @ all_var)
-    j = 0
-    # setting the matrixs for constraints with equality and inequality
-    for i in range(len(lines)):
-        equ_matrix[i][j] = 1
-        equ_matrix[i][j + 1] = lines[i]["m"]
-        inequ_matrix[i][j] = 1
-        inequ_matrix[i][j + 1] = -lines[i]["s"]
-        j += 2
-    # Define the constraint for the model
+    b = np.array([l_[0] for l_ in lines])
+    m = np.array([l_[1] for l_ in lines])
+
+    # initialize the variables
+    x = cp.Variable(len(lines))
+    y = cp.multiply(m, x) + b
+    
+    objective = cp.Maximize(cp.sum(y))
+
     constraints = [
-        equ_matrix @ all_var == y_inter,
-        inequ_matrix @ all_var >= np.array(np.zeros(len(lines))),
-        input_var.T @ all_var == amt,
-        all_var >= 0,
+        cp.sum(x) <= amt,
+        y >= cp.multiply(slopes, x)
     ]
-    problem = cp.Problem(objective, constraints)
-    # Solve the model
-    problem.solve()
-    # if feasible solution exist the return the values of input variables
-    # ie., the split value for asset-a across k-shortest path
-    # from these split values we will calculate the estimated amount of asset-b using the
-    # available liquidity
-    if all_var.value is not None:
-        return (all_var.value).flatten("F")[1::2].tolist()
+
+    prob = cp.Problem(objective, constraints)
+    prob.solve()
+
+    if x.value is not None:
+        return x.value.tolist()
     else:
-        _logger.info("No Feasible solution")
-        _logger.info(
-            "Either increase the slippage value or number of paths to obtain a feasible solution"
-        )
-        print("No Feasible solution")
+        _logger.warn("No Feasible solution for linear model")
         return []
 
 
@@ -218,3 +174,94 @@ def prior_to_model(slope_dict, intercept_dict, slippage_dict):
             )
             j = j + 2
     return lines_list
+
+
+def linear_model_old(lines, amt) -> list:
+    """
+    For a series of lines compute the following optimization problem:
+    Maximize:
+        The sum of output_var's
+    Constained by:
+        output_var_i - m_i * input_var_i==c_i
+        output_var_i - slippage_i * input_var_i>=0
+    sum of all input_var==amt
+    Args:
+        lines: list of dictionaries containing parameters
+        (slope, intercept, slippage) values for all the k-shortest path
+    Return:
+        list of variables values
+    """
+    equ_matrix = np.zeros((len(lines), len(lines) * 2))
+    inequ_matrix = np.zeros((len(lines), len(lines) * 2))
+    y_inter = np.array([sub["c"] for sub in lines])
+    # Define all the variables as x for the model
+    all_var = cp.Variable(len(lines) * 2, name="x")
+    output_var = np.array([1 if i % 2 == 0 else 0 for i in range(len(lines) * 2)])
+    input_var = np.array([1 if i % 2 == 1 else 0 for i in range(len(lines) * 2)])
+    # Define the objective function for the model
+    objective = cp.Maximize(output_var.T @ all_var)
+    j = 0
+    # setting the matrixs for constraints with equality and inequality
+    for i in range(len(lines)):
+        equ_matrix[i][j] = 1
+        equ_matrix[i][j + 1] = lines[i]["m"]
+        inequ_matrix[i][j] = 1
+        inequ_matrix[i][j + 1] = -lines[i]["s"]
+        j += 2
+    # Define the constraint for the model
+    constraints = [
+        equ_matrix @ all_var == y_inter,
+        inequ_matrix @ all_var >= np.array(np.zeros(len(lines))),
+        input_var.T @ all_var == amt,
+        all_var >= 0,
+    ]
+    problem = cp.Problem(objective, constraints)
+    # Solve the model
+    problem.solve()
+    # if feasible solution exist the return the values of input variables
+    # ie., the split value for asset-a across k-shortest path
+    # from these split values we will calculate the estimated amount of asset-b using the
+    # available liquidity
+    if all_var.value is not None:
+        return (all_var.value).flatten("F")[1::2].tolist()
+    else:
+        _logger.info("No Feasible solution")
+        _logger.info(
+            "Either increase the slippage value or number of paths to obtain a feasible solution"
+        )
+        print("No Feasible solution")
+        return []
+
+def liquidity_per_path(paths, amt) -> Tuple[dict, dict, dict]:
+    """
+    Calculates the linear function (slope, intercept) for all the edges
+    of k-shortest paths using the available liquidity at the path edges
+    and the given exchange rate
+    Args:
+        paths: Set of k-shortest path between source and destination chains
+        amt: The amount of liquidity to be exchanged/swapped
+    Returns:
+        A tuple of the dictionaries for path liquidity info:
+        (slope_dict, intercept_dict, price_estimate_dict)
+    """
+    slope_dict = {}
+    inter_dict = {}
+    slippage_dict = {}
+    i = 0
+    for i, ip in enumerate(paths):
+        slope = []
+        y_inter = []
+        slippage_price = []
+        for edge in ip:
+            asset_a = (0.5 * edge["liquidity"]) / edge["rate"]
+            asset_b = 0.5 * edge["liquidity"]
+            print(edge["bridge"])
+            pic_slope, pic_intercept, s_price = price_impact_line(asset_a, asset_b, amt)
+            slope.append(pic_slope)
+            y_inter.append(pic_intercept)
+            slippage_price.append(s_price)
+        slope_dict[i] = slope
+        inter_dict[i] = y_inter
+        slippage_dict[i] = slippage_price
+
+    return slope_dict, inter_dict, slippage_dict
