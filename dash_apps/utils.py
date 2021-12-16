@@ -2,7 +2,7 @@ from pprint import pprint
 import numpy as np
 from networkx.drawing.layout import spring_layout
 from networkx.readwrite import json_graph
-from entropic.liquidity import price_impact_curve, price_impact_line
+from entropic.liquidity import exchange_function, exchange_line
 from entropic.core import DEXA
 import pandas as pd
 import plotly.express as px
@@ -63,8 +63,8 @@ def get_price_impact_curve(edge_data, amt):
     if edge_data:
         liq_1 = edge_data["source_liquidity"]
         liq_2 = edge_data["target_liquidity"]
-        xx, yy = price_impact_curve(liq_1, liq_2, amt=amt)
-        slope, intercept, price = price_impact_line(
+        xx, yy = exchange_function(liq_1, liq_2, amt=amt)
+        slope, intercept, price = exchange_line(
             liq_1, liq_2, amt=amt, slippage=0.95
         )
         yy_fit = slope * xx + intercept

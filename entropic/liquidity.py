@@ -1,50 +1,100 @@
 # %%
 from typing import Tuple
 import numpy as np
+from scipy.optimize import curve_fit
 import cvxpy as cp
 import logging
 
 _logger = logging.getLogger(__name__)
 
 
-def exchange_curve(
-    liq1: float, liq2: float, amt: float
-) -> Tuple[np.array, np.array]:
+def exchange_function(
+    x, liq1: float, liq2: float
+) -> np.array:
     """
-    Calculates the price impact curve between two different assets by
-    fitting a linear function to the data between [0, amt]
+    Calculates the exchange function between two different assets:
+    For x amount of asset1 return the amount of asset2 assumeing 
+    a constant product exchange.
     Args:
+        x: The amount of asset1 to be transferred
         liq1: The liquidity of the source asset
         liq2: The liquidity of the destination asset
-        amt: The amount of liquidity to be transferred
     Returns:
-        A tuple of the price impact info:
-        (slope, intercept, price_estimate)
+        The x and y values of the exchange function
     """
     k = liq1 * liq2
-    xx = np.linspace(0, amt, 100)
-    yy = liq2 - (k / (liq1 + xx))
-    return xx, yy
+    return liq2 - (k / (liq1 + x))
 
-def exchange_line(
-    liq1: float, liq2: float, amt: float, slippage=0.95
-) -> Tuple[float, float, float]:
+def _fit_func(x, a, b, c, d):
     """
-    Calculates the price impact curve between two different assets by
-    fitting a linear function to the data between [0, amt]
+    The functional form we are fitting to
+    """
+    return a * np.sqrt(b* x + c) + d
+
+def _fit_func_dcp(x, a, b, c, d):
+    """
+    The functional form we are fitting to
+    """
+    return a * cp.sqrt(b* x + c) + d
+
+def exchange_fit(x:np.array, liq1: float, liq2: float) -> np.array:
+    """
+    Since the exchange function is not DCP compliant we have to fit it to a DCP compliant function
     Args:
         liq1: The liquidity of the source asset
         liq2: The liquidity of the destination asset
-        amt: The amount of liquidity to be transferred
-        slippage: The slippage factor
-    Returns:
-        A tuple of the price impact info:
-        (slope, intercept, price_estimate)
     """
-    xx, yy = exchange_curve(liq1=liq1, liq2=liq2, amt=amt)
-    slope, intercept = np.polyfit(xx, yy, 1)
-    price_estimate = (liq2 - ((liq1 * liq2) / (liq1 + 1))) * slippage
-    return slope, intercept, price_estimate
+    popt = exchange_fit_params(x, liq1=liq1, liq2=liq2)
+    return _fit_func(x, *popt)
+    
+def exchange_fit_params(x:np.array, liq1: float, liq2: float) -> np.array:
+    """
+    Get the parameters for the DCP compliant fit function
+    """
+    y0 = exchange_function(x, liq1=liq1, liq2=liq2)
+    popt, _ = curve_fit(_fit_func, x, y0, method='trf')
+    return popt
+
+def convex_model(amt, A, B, C, D, S):
+    """
+    For a list of curves defined by:
+        y_i = A_i * sqrt(B_i * x_i + C_i) + D_i
+    Maximize:
+        sum(y_i)
+    Constraints:
+        1. sum(x_i) < total
+        2. y_i >= S_i * x_i
+    Args:
+        amt: total amount of liquidity to be exchanged
+        A: set of A_i
+        B: set of B_i
+        C: set of C_i
+        D: set of D_i
+        S: set of S_i
+    Returns:
+        x_i: set of x_i
+    """
+    # initialize the variables
+    x = cp.Variable(len(A))
+    y = cp.multiply(A, cp.sqrt(cp.multiply(B, x) + C)) + D
+
+    # Define the problem
+    objective = cp.Maximize(cp.sum(y))
+    constraints = [
+        cp.sum(x) == amt,
+        y >= cp.multiply(S, x)
+    ]
+    prob = cp.Problem(objective, constraints)
+    prob.solve()
+
+    if x.value is None:
+        raise ValueError("No Feasible solution for convex model")
+    return x.value.tolist()
+
+
+# Old functions
+# [TODO] Cleanup and remove
+
 
 def linear_model(lines, slopes, amt):
     """

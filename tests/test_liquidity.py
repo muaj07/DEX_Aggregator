@@ -1,9 +1,10 @@
 # %%
 from pathlib import Path
+import numpy as np
 import pytest
 import random
 from monty.serialization import loadfn
-from entropic.liquidity import exchange_curve, linear_model
+from entropic.liquidity import convex_model, exchange_fit_params, exchange_function, linear_model
 
 TEST_FILES_DIR = Path(__file__).parent.parent / "test_files"
 
@@ -23,47 +24,23 @@ def test_exchange_curve():
     Test the exchange curve function.
     the path is given by a list of nodes with some finite liquidity
     """
-    hop = {"source_liquidity": 1, "target_liquidity": 1}
-    xx, yy = exchange_curve(hop["source_liquidity"], hop["target_liquidity"], 1)
-    assert max(xx) <= 1
+    hop = {"source_liquidity": 10, "target_liquidity": 10}
+    x = np.linspace(0, 10, 100)
+    y = exchange_function(x, hop["source_liquidity"], hop["target_liquidity"])
+    # check that the exchange function is monotonic
+    assert np.all(np.diff(y) >= 0)
+    # check that the exchange function is convex
+    assert np.all(np.diff(y, 2) <= 0)
 
 
-def test_linear_model():
+def test_convex_model():
     """
-    Test the linear optimizatiom model for the order split of asset across given k-shortest paths
-    The return value for x variables should not be none
+    What ever the model is, if we feed it two identical curves it should split the order evenly
     """
-    lines = [[10.5, 3.9], [9.84, 4.0]]
-    slopes = [3.9, 4.09]
-    res = linear_model(lines, slopes, 500)
-    assert res[0] == pytest.approx(390.66667)
-    assert res[1] == pytest.approx(109.33332)
-
-
-# def test_process_model_result(path_data):
-#     """
-#     Test the post-process function
-#     """
-#     # Values for asset-a split across
-#     actual_var = random.sample(range(10, 30), len(path_data))
-#     max_x_value = max(actual_var)
-#     max_x_index = actual_var.index(max_x_value)
-#     for i, ip in enumerate(actual_var):
-#         if ip < (max_x_value * 0.01):
-#             actual_var[max_x_index] = actual_var[max_x_index] + actual_var[i]
-#             actual_var[i] = 0
-#         # initialize dict for paths as keys and asset-B amount as values
-#         asset_amount = {}
-#         # estimating the amount of asset-B using the k-shortest paths and the split values
-#         for i, ip in enumerate(path_data):
-#             if actual_var[i] != 0:
-#                 asset_amount[i] = actual_var[i]
-#                 for edge in ip:
-#                     asset_a = (0.5 * edge["liquidity"]) / edge["rate"]
-#                     asset_b = 0.5 * edge["liquidity"]
-#                     k = asset_a * asset_b
-#                     asset_amount[i] = asset_b - (k / (asset_a + asset_amount[i]))
-#                     assert asset_amount[i] >= 0
-
-
-# %%
+    x_grid = np.linspace(0, 100, 100)
+    opt1 = exchange_fit_params(x_grid, liq1=100, liq2=100)
+    opt2 = exchange_fit_params(x_grid, liq1=100, liq2=100)
+    A, B, C, D = np.vstack([opt1, opt2]).T
+    p1, p2 = convex_model(100, A, B, C, D, [0,0])
+    assert pytest.approx(p1, 0.01) == pytest.approx(p2, 0.01)
+    
