@@ -10,7 +10,7 @@ _logger = logging.getLogger(__name__)
 def exchange_function(x, liq1: float, liq2: float) -> np.array:
     """
     Calculates the exchange function between two different assets:
-    For x amount of asset1 return the amount of asset2 assumeing
+    For x amount of asset1 return the amount of asset2 assuming
     a constant product exchange.
     Args:
         x: The amount of asset1 to be transferred
